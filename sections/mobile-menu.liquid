@@ -1,3 +1,20 @@
+<style>
+  .mobile-nav,
+  .drawer--menu,
+  [data-drawer="hamburger"] {
+    background-color: #0f0f0f !important;
+    color: #ffffff !important;
+  }
+  [data-drawer="hamburger"] .navlink,
+  [data-drawer="hamburger"] .navtext,
+  [data-drawer="hamburger"] a {
+    color: #ffffff !important;
+  }
+  [data-drawer="hamburger"] .navlink:hover {
+    opacity: 0.75;
+  }
+</style>
+
 {%- liquid
   assign animation_name = 'drawer-items-fade'
   assign animation_duration = 500

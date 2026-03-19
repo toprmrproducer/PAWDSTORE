@@ -38,7 +38,7 @@
     assign transparent_header = true
   endif
 
-  assign main_menu_linklist = section.settings.main_menu_linklist | default: 'main-menu'
+  assign main_menu_linklist = section.settings.main_menu_linklist | default: 'new-menu'
   assign secondary_menu_linklist = section.settings.secondary_menu_linklist
 
   assign logo = section.settings.logo
@@ -193,7 +193,23 @@
   {%- unless transparent_header -%}
     .main-content > .shopify-section:first-of-type .backdrop--linear:before { display: none; }
   {%- endunless -%}
+
+  /* Non-homepage solid header */
+  body:not(.template-index) .theme__header {
+    background-color: #0f0f0f !important;
+  }
+  body:not(.template-index) .theme__header .navlink,
+  body:not(.template-index) .theme__header .header__logo__text span {
+    color: #ffffff !important;
+  }
+  body:not(.template-index) .theme__header .navlink:hover {
+    opacity: 0.75;
+  }
 {%- endstyle -%}
+
+<!-- IMPORTANT: In Shopify Admin → Navigation, create a menu with handle "new-menu" 
+containing the links: Home, Shop, Dogs, Cats, Collars, Harnesses, 
+Best Sellers, New In, Sale, Our Craft, About, FAQ, Resources, Contact -->
 
 {%- capture toolbar -%}
   {%- render 'header-toolbar' block: toolbar_block -%}
