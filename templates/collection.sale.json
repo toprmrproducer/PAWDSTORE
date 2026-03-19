@@ -1,0 +1,100 @@
+{
+  "sections": {
+    "hero": {
+      "type": "pawd-collection-hero",
+      "settings": {
+        "eyebrow": "Sale",
+        "show_title": true,
+        "show_description": true
+      }
+    },
+    "main": {
+      "type": "pawd-collection-grid",
+      "settings": {
+        "grid_columns": 4,
+        "products_per_page": 24,
+        "card_ratio": "portrait",
+        "show_subnav": false,
+        "subnav_linklist": "",
+        "show_filters": true,
+        "show_sidebar": false,
+        "show_pers_strip": false,
+        "show_sale_timer": true,
+        "sale_end_date": "2025-12-31T23:59:59",
+        "show_rank_badges": false
+      },
+      "blocks": {
+        "sale_msg": {
+          "type": "sale_message",
+          "settings": {
+            "title": "Summer Sale",
+            "subtitle": "Up to 40% off selected items"
+          }
+        }
+      },
+      "block_order": [
+        "sale_msg"
+      ]
+    },
+    "editorial": {
+      "type": "pawd-collection-editorial",
+      "settings": {
+        "eyebrow": "Limited Time",
+        "title": "Don't Miss Out",
+        "body": "Selected styles at reduced prices. Once they're gone, they're gone.",
+        "button_text": "Explore Our Story",
+        "button_url": "/pages/our-story"
+      }
+    },
+    "faq": {
+      "type": "pawd-collection-faq",
+      "settings": {
+        "eyebrow": "Need Help?",
+        "title": "Frequently Asked Questions",
+        "body": "<p>Everything you need to know about our collection.</p>"
+      },
+      "blocks": {
+        "faq_0": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does the sale last?",
+            "answer": "<p>Sale dates are shown in the countdown timer above. All sale items are subject to availability.</p>"
+          }
+        },
+        "faq_1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I return sale items?",
+            "answer": "<p>Yes, standard return policy applies to sale items. Items must be unused and in original packaging within 30 days.</p>"
+          }
+        },
+        "faq_2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Is the discount applied automatically?",
+            "answer": "<p>Yes, all sale prices are already applied. No code needed.</p>"
+          }
+        },
+        "faq_3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I use a discount code on sale items?",
+            "answer": "<p>Discount codes cannot be combined with sale pricing.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_0",
+        "faq_1",
+        "faq_2",
+        "faq_3"
+      ]
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "editorial",
+    "faq"
+  ]
+}

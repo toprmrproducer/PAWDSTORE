@@ -1,0 +1,96 @@
+{
+  "sections": {
+    "hero": {
+      "type": "pawd-collection-hero",
+      "settings": {
+        "eyebrow": "Dog Collars",
+        "show_title": true,
+        "show_description": true
+      }
+    },
+    "main": {
+      "type": "pawd-collection-grid",
+      "settings": {
+        "grid_columns": 3,
+        "products_per_page": 24,
+        "card_ratio": "portrait",
+        "show_subnav": true,
+        "subnav_linklist": "dogs-subnav",
+        "show_filters": true,
+        "show_sidebar": true,
+        "show_pers_strip": false,
+        "show_sale_timer": false,
+        "sale_end_date": "",
+        "show_rank_badges": false
+      }
+    },
+    "editorial": {
+      "type": "pawd-collection-editorial",
+      "settings": {
+        "eyebrow": "Collar Collection",
+        "title": "The Art of the Collar",
+        "body": "Hand-finished from the finest materials. Leather, velvet, nylon \u2014 each collar tells a story.",
+        "button_text": "Explore Our Story",
+        "button_url": "/pages/our-story"
+      }
+    },
+    "faq": {
+      "type": "pawd-collection-faq",
+      "settings": {
+        "eyebrow": "Need Help?",
+        "title": "Frequently Asked Questions",
+        "body": "<p>Everything you need to know about our collection.</p>"
+      },
+      "blocks": {
+        "faq_0": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What collar size does my dog need?",
+            "answer": "<p>Measure the circumference of your dog's neck where the collar sits. Add 2cm for comfort. XS: 20\u201328cm, S: 28\u201336cm, M: 36\u201344cm, L: 44\u201352cm, XL: 52\u201360cm.</p>"
+          }
+        },
+        "faq_1": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is the difference between leather and nylon?",
+            "answer": "<p>Our leather collars are crafted from full-grain Italian leather that develops a beautiful patina over time. Nylon collars are lightweight, quick-drying, and ideal for active or water-loving dogs.</p>"
+          }
+        },
+        "faq_2": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How do I care for a leather collar?",
+            "answer": "<p>Wipe with a damp cloth and condition with leather balm every 2\u20133 months. Avoid prolonged water exposure.</p>"
+          }
+        },
+        "faq_3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I get a collar personalised?",
+            "answer": "<p>Yes! Our personalised collars feature hand-stamped engraving in brass. Choose up to 12 characters. Please note: personalised items are final sale.</p>"
+          }
+        },
+        "faq_4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are the buckles safe?",
+            "answer": "<p>All our hardware is solid brass or surgical-grade stainless steel. No cheap zinc alloy \u2014 ever.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_0",
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4"
+      ]
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "editorial",
+    "faq"
+  ]
+}

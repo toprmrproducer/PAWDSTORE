@@ -1,0 +1,292 @@
+{% comment %}
+  PAWD Article Post — Single journal article layout
+  Hero · Meta bar · Progress bar · Body (article.content) + Sidebar · Related articles
+  Content blocks: all cb-* classes available via pawd-resources.css for merchant HTML
+{% endcomment %}
+
+{{ 'pawd-resources.css' | asset_url | stylesheet_tag }}
+
+<!-- Full-bleed hero image -->
+<div class="post-hero-img g-l">
+  {%- if article.image -%}
+    {{ article.image | image_url: width: 2000 | image_tag: loading: 'eager', style: 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0' }}
+  {%- else -%}
+    <div class="iph"><div class="iph-l">&#8592; AI Image Placement</div></div>
+  {%- endif -%}
+</div>
+
+<!-- Meta bar -->
+<div class="post-meta-bar">
+  <div class="pg-breadcrumb" style="margin:0">
+    <a href="{{ section.settings.resources_url | default: '/pages/resources' }}">Resources</a>
+    <span>/</span>
+    <a href="{{ blog.url }}">Articles</a>
+    <span>/</span>
+    <span>{{ article.title | truncate: 30 }}</span>
+  </div>
+  {%- assign word_count = article.content | strip_html | split: ' ' | size -%}
+  {%- assign read_time = word_count | divided_by: 200 | plus: 1 -%}
+  <span class="pmb-sep">&middot;</span><span class="pmb-item">{{ read_time }} min read</span>
+  <span class="pmb-sep">&middot;</span><span class="pmb-item">By {{ article.author }}</span>
+  <span class="pmb-sep">&middot;</span><span class="pmb-item">{{ article.published_at | date: '%B %Y' }}</span>
+  <span style="margin-left:auto;display:flex;gap:10px">
+    <button class="cb-share-btn" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='Copied!'">Share</button>
+    <button class="cb-share-btn">Save</button>
+  </span>
+</div>
+
+<!-- Reading progress bar -->
+<div class="cb-progress-wrap"><div class="cb-progress-bar" id="articleProgress"></div></div>
+
+<div style="padding:0 80px">
+<div class="post-layout">
+
+  <!-- Main body -->
+  <div class="post-body">
+    <!-- Tags + title -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      {%- for tag in article.tags -%}
+        <span class="tag tag-{{ tag | handleize }}">{{ tag }}</span>
+      {%- endfor -%}
+    </div>
+    <h1 class="cb-title">{{ article.title }}</h1>
+
+    <!-- Article content (merchant-authored with cb-* classes) -->
+    {{ article.content }}
+
+    <hr class="art-divider">
+
+    <!-- Author bio -->
+    <div class="author-block">
+      <div class="author-avatar g-a">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:24px;color:rgba(255,255,255,.25)">{{ article.author | slice: 0 }}</div>
+      </div>
+      <div class="author-info">
+        <div class="author-name">{{ article.author }}</div>
+        {%- if section.settings.author_role != blank -%}
+          <div class="author-role">{{ section.settings.author_role }}</div>
+        {%- endif -%}
+        {%- if section.settings.author_bio != blank -%}
+          <div class="author-bio">{{ section.settings.author_bio }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Tags footer -->
+    <div class="cb-tags-footer">
+      <div class="cb-tags-label">Topics:</div>
+      <div class="cb-tags-list">
+        {%- for tag in article.tags -%}
+          <a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="cb-tag-item" style="text-decoration:none;color:inherit">{{ tag }}</a>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- Social share -->
+    <div class="cb-social-share">
+      <div class="cb-ss-label">Found this useful? Share it.</div>
+      <div class="cb-ss-btns">
+        <button class="cb-ss-btn" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='Copied!'">Copy Link</button>
+        <button class="cb-ss-btn" onclick="window.open('https://pinterest.com/pin/create/button/?url='+encodeURIComponent(window.location.href)+'&description='+encodeURIComponent(document.title),'_blank','width=600,height=400')">Save to Pinterest</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="post-sidebar">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+
+        {%- when 'toc' -%}
+          <div class="sidebar-widget" {{ block.shopify_attributes }}>
+            <div class="sw-title">In This Article</div>
+            {%- assign toc_items = block.settings.items | split: '|' -%}
+            {%- for item in toc_items -%}
+              <div class="sw-toc-item"><span class="sw-toc-num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>{{ item }}</div>
+            {%- endfor -%}
+          </div>
+
+        {%- when 'sidebar_product' -%}
+          <div class="sidebar-widget" {{ block.shopify_attributes }}>
+            {%- if forloop.first or section.blocks[forloop.index0 | minus: 1].type != 'sidebar_product' -%}
+              <div class="sw-title">{{ block.settings.widget_title | default: 'Shop the Range' }}</div>
+            {%- endif -%}
+            {%- if block.settings.product != blank -%}
+              {%- assign prod = block.settings.product -%}
+              <a href="{{ prod.url }}" class="sw-product" style="text-decoration:none;color:inherit">
+                <div class="sw-prod-img">
+                  {%- if prod.featured_image -%}
+                    {{ prod.featured_image | image_url: width: 200 | image_tag: style: 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0' }}
+                  {%- else -%}
+                    <div class="iph" style="padding:4px"><div class="iph-l" style="font-size:8px">Product</div></div>
+                  {%- endif -%}
+                </div>
+                <div class="sw-prod-info">
+                  <div class="sw-prod-name">{{ prod.title }}</div>
+                  <div class="sw-prod-price">{{ prod.price | money }}</div>
+                </div>
+              </a>
+            {%- else -%}
+              <div class="sw-product">
+                <div class="sw-prod-img g-a"><div class="iph" style="padding:4px"><div class="iph-l" style="font-size:8px">Product</div></div></div>
+                <div class="sw-prod-info">
+                  <div class="sw-prod-name">{{ block.settings.title }}</div>
+                  <div class="sw-prod-price">{{ block.settings.price_text }}</div>
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+
+        {%- when 'related_articles' -%}
+          <div class="sidebar-widget" {{ block.shopify_attributes }}>
+            <div class="sw-title">Related Articles</div>
+            {%- assign rel_blog = blogs[block.settings.blog_handle | default: blog.handle] -%}
+            {%- assign rel_shown = 0 -%}
+            {%- for rel in rel_blog.articles limit: 6 -%}
+              {%- if rel.handle != article.handle and rel_shown < 3 -%}
+                <a href="{{ rel.url }}" class="sw-card" style="text-decoration:none;color:inherit">
+                  <div class="sw-card-img g-e">
+                    {%- if rel.image -%}
+                      {{ rel.image | image_url: width: 200 | image_tag: style: 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0' }}
+                    {%- else -%}
+                      <div class="iph"><div class="iph-l" style="font-size:9px">AI Image</div></div>
+                    {%- endif -%}
+                  </div>
+                  <div class="sw-card-body">
+                    <div class="sw-card-tag">
+                      {%- for tag in rel.tags limit: 2 -%}{{ tag }}{% unless forloop.last %} &middot; {% endunless %}{%- endfor -%}
+                    </div>
+                    <div class="sw-card-title">{{ rel.title }}</div>
+                  </div>
+                </a>
+                {%- assign rel_shown = rel_shown | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+</div>
+</div>
+
+<!-- Related posts strip -->
+<div class="related-section">
+  <div style="font-family:var(--fb);font-size:10px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--si);margin-bottom:8px">{{ section.settings.related_eyebrow | default: 'Keep Reading' }}</div>
+  <div style="font-family:var(--fd);font-size:clamp(28px,3vw,42px);font-weight:300">{{ section.settings.related_title | default: 'Related <em>Articles</em>' }}</div>
+  <div class="rel-grid">
+    {%- assign related_blog_handle = section.settings.related_blog | default: blog.handle -%}
+    {%- assign rel_blog = blogs[related_blog_handle] -%}
+    {%- assign rel_count = 0 -%}
+    {%- assign gradient_pool = 'm,k,f,e,c,a,b,d,g,h,j,l' | split: ',' -%}
+    {%- for rel in rel_blog.articles limit: 6 -%}
+      {%- if rel.handle != article.handle and rel_count < 3 -%}
+        {%- assign gi = rel_count | modulo: 12 -%}
+        <a href="{{ rel.url }}" class="card" style="text-decoration:none;color:inherit">
+          <div class="card-img g-{{ gradient_pool[gi] }}">
+            {%- if rel.image -%}
+              {{ rel.image | image_url: width: 600 | image_tag: loading: 'lazy', style: 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0' }}
+            {%- else -%}
+              <div class="iph"><div class="iph-l">AI Image</div></div>
+            {%- endif -%}
+          </div>
+          <div class="card-body">
+            <div class="card-tag-row">
+              {%- for tag in rel.tags limit: 1 -%}
+                <span class="tag tag-{{ tag | handleize }}">{{ tag }}</span>
+              {%- endfor -%}
+            </div>
+            <div class="card-title">{{ rel.title }}</div>
+            <div class="card-meta">
+              <span class="read-time">{{ rel.content | strip_html | split: ' ' | size | divided_by: 200 | plus: 1 }} min</span>
+              <span class="btn-txt">Read</span>
+            </div>
+          </div>
+        </a>
+        {%- assign rel_count = rel_count | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+<script>
+  /* Accordion toggle */
+  function toggleAcc(el){
+    var item=el.parentElement;
+    item.classList.toggle('open');
+    var icon=el.querySelector('.cb-acc-icon');
+    if(icon) icon.textContent=item.classList.contains('open')?'\u2212':'+';
+  }
+  /* Progress bar */
+  (function(){
+    var bar=document.getElementById('articleProgress');
+    if(!bar) return;
+    window.addEventListener('scroll',function(){
+      var body=document.querySelector('.post-body');
+      if(!body) return;
+      var rect=body.getBoundingClientRect(),
+          total=body.scrollHeight,
+          scrolled=Math.max(0,-rect.top),
+          pct=Math.min(100,scrolled/total*100);
+      bar.style.width=pct+'%';
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "PAWD Article Post",
+  "tag": "section",
+  "class": "pawd-article-post-section",
+  "settings": [
+    { "type": "url", "id": "resources_url", "label": "Resources Hub URL" },
+    { "type": "text", "id": "author_role", "label": "Author Role", "default": "Co-Founder & Creative Director · PAWD" },
+    { "type": "textarea", "id": "author_bio", "label": "Author Bio" },
+    { "type": "header", "content": "Related Posts" },
+    { "type": "text", "id": "related_blog", "label": "Related Blog Handle" },
+    { "type": "text", "id": "related_eyebrow", "label": "Eyebrow", "default": "Keep Reading" },
+    { "type": "html", "id": "related_title", "label": "Title", "default": "Related <em>Articles</em>" }
+  ],
+  "blocks": [
+    {
+      "type": "toc",
+      "name": "Table of Contents",
+      "limit": 1,
+      "settings": [
+        { "type": "textarea", "id": "items", "label": "Items (pipe-separated)", "default": "The Four Grades of Leather|Where Our Leather Comes From|What Full-Grain Feels Like|Why Most Brands Don't Use It" }
+      ]
+    },
+    {
+      "type": "sidebar_product",
+      "name": "Sidebar Product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "widget_title", "label": "Widget Title", "default": "Shop the Leather Range" },
+        { "type": "text", "id": "title", "label": "Fallback Title", "default": "Italian Leather Collar" },
+        { "type": "text", "id": "price_text", "label": "Fallback Price", "default": "From $89 AUD" }
+      ]
+    },
+    {
+      "type": "related_articles",
+      "name": "Related Articles",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "blog_handle", "label": "Blog Handle" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PAWD Article Post",
+      "blocks": [
+        { "type": "toc", "settings": { "items": "The Four Grades of Leather|Where Our Leather Comes From|What Full-Grain Feels Like|Why Most Brands Don't Use It" } },
+        { "type": "sidebar_product", "settings": { "title": "Italian Leather Collar", "price_text": "From $89 AUD" } },
+        { "type": "sidebar_product", "settings": { "title": "The Leather Lead", "price_text": "From $119 AUD" } },
+        { "type": "sidebar_product", "settings": { "title": "The Leather Harness", "price_text": "From $149 AUD" } },
+        { "type": "related_articles" }
+      ]
+    }
+  ]
+}
+{% endschema %}

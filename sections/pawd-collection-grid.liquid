@@ -1,0 +1,376 @@
+{%- comment -%} PAWD Collection Grid — breadcrumbs, sub-nav, filters, grid, pagination {%- endcomment -%}
+{{ 'pawd-collection.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign grid_cols = section.settings.grid_columns | default: 4
+  assign per_page = section.settings.products_per_page | default: 24
+  assign show_subnav = section.settings.show_subnav
+  assign subnav_linklist = section.settings.subnav_linklist
+  assign show_sidebar = section.settings.show_sidebar
+  assign show_pers_strip = section.settings.show_pers_strip
+  assign show_sale_timer = section.settings.show_sale_timer
+  assign sale_end_date = section.settings.sale_end_date
+  assign show_rank_badges = section.settings.show_rank_badges
+  assign show_filters = section.settings.show_filters
+  assign card_ratio = section.settings.card_ratio | default: 'portrait'
+-%}
+
+{%- comment -%} Breadcrumbs {%- endcomment -%}
+<nav class="pawd-coll-bc" aria-label="Breadcrumb">
+  <a href="/">Home</a>
+  <span>&rsaquo;</span>
+  {%- if collection.title -%}
+    <span class="cur">{{ collection.title }}</span>
+  {%- endif -%}
+</nav>
+
+{%- comment -%} Sub-Nav Tabs {%- endcomment -%}
+{%- if show_subnav and subnav_linklist != blank -%}
+  {%- assign nav = linklists[subnav_linklist] -%}
+  {%- if nav.links.size > 0 -%}
+    <div class="pawd-sub-strip">
+      {%- for link in nav.links -%}
+        <a href="{{ link.url }}" class="pawd-sub-link{% if link.active %} active{% endif %}">{{ link.title }}</a>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+{%- endif -%}
+
+{%- comment -%} Personalise USP Strip {%- endcomment -%}
+{%- if show_pers_strip -%}
+  <div class="pawd-pers-strip">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'usp_item' -%}
+        <div class="pawd-pers-usp" {{ block.shopify_attributes }}>
+          {%- if block.settings.icon != blank -%}
+            <span class="pawd-pers-usp-icon">{{ block.settings.icon }}</span>
+          {%- endif -%}
+          <div>
+            <div class="pawd-pers-usp-title">{{ block.settings.title }}</div>
+            {%- if block.settings.subtitle != blank -%}
+              <div class="pawd-pers-usp-sub">{{ block.settings.subtitle }}</div>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+{%- endif -%}
+
+{%- comment -%} Sale Countdown Timer {%- endcomment -%}
+{%- if show_sale_timer and sale_end_date != blank -%}
+  <div class="pawd-sale-timer" data-pawd-countdown="{{ sale_end_date }}">
+    <div class="pawd-timer-block">
+      <div class="pawd-timer-num" data-days>00</div>
+      <div class="pawd-timer-lab">Days</div>
+    </div>
+    <span class="pawd-timer-sep">:</span>
+    <div class="pawd-timer-block">
+      <div class="pawd-timer-num" data-hours>00</div>
+      <div class="pawd-timer-lab">Hours</div>
+    </div>
+    <span class="pawd-timer-sep">:</span>
+    <div class="pawd-timer-block">
+      <div class="pawd-timer-num" data-mins>00</div>
+      <div class="pawd-timer-lab">Mins</div>
+    </div>
+    <span class="pawd-timer-sep">:</span>
+    <div class="pawd-timer-block">
+      <div class="pawd-timer-num" data-secs>00</div>
+      <div class="pawd-timer-lab">Secs</div>
+    </div>
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'sale_message' -%}
+        <div class="pawd-sale-msg" {{ block.shopify_attributes }}>
+          <div class="pawd-sale-msg-title">{{ block.settings.title }}</div>
+          <div class="pawd-sale-msg-sub">{{ block.settings.subtitle }}</div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+{%- endif -%}
+
+{%- comment -%} Filters Bar {%- endcomment -%}
+{%- if show_filters -%}
+  <div class="pawd-filters-row">
+    <div class="pawd-filters-left">
+      <button class="pawd-f-btn" type="button" data-pawd-filter="all">Filter</button>
+      {%- for filter in collection.filters -%}
+        <button class="pawd-f-btn" type="button" data-pawd-filter="{{ filter.label | handleize }}">{{ filter.label }}</button>
+      {%- endfor -%}
+    </div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="pawd-f-count">{{ collection.products_count }} products</span>
+      <button class="pawd-sort-btn" type="button">Sort &#x25BE;</button>
+    </div>
+  </div>
+{%- endif -%}
+
+{%- comment -%} Grid Area (with optional sidebar) {%- endcomment -%}
+<div class="pawd-coll-body">
+  {%- if show_sidebar -%}
+    <aside class="pawd-sidebar active">
+      {%- for filter in collection.filters -%}
+        <div class="pawd-sb-sec">
+          <div class="pawd-sb-title">{{ filter.label }}</div>
+          {%- for value in filter.values -%}
+            <a href="{{ value.url }}" class="pawd-sb-item{% if value.active %} sel{% endif %}">
+              {{ value.label }}
+              <span style="font-size:11px;color:var(--si)">{{ value.count }}</span>
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </aside>
+  {%- endif -%}
+
+  <div class="pawd-grid-area">
+    {%- paginate collection.products by per_page -%}
+      <div class="pawd-prod-grid pawd-g{{ grid_cols }}">
+        {%- for product in collection.products -%}
+          {%- assign card_image = product.featured_image -%}
+          <a href="{{ product.url }}" class="pawd-prod-card">
+            <div class="pawd-card-img ratio-{{ card_ratio }}">
+              {%- if card_image -%}
+                <img
+                  src="{{ card_image | image_url: width: 600 }}"
+                  srcset="{{ card_image | image_url: width: 300 }} 300w, {{ card_image | image_url: width: 600 }} 600w, {{ card_image | image_url: width: 900 }} 900w"
+                  sizes="(max-width:480px) 100vw, (max-width:999px) 50vw, {% if grid_cols == 3 %}33vw{% else %}25vw{% endif %}"
+                  alt="{{ product.title | escape }}"
+                  loading="lazy"
+                  width="{{ card_image.width }}"
+                  height="{{ card_image.height }}"
+                >
+              {%- endif -%}
+
+              {%- comment -%} Badges {%- endcomment -%}
+              {%- if product.compare_at_price > product.price -%}
+                <span class="pawd-card-badge pawd-badge-sale">Sale</span>
+              {%- elsif product.tags contains 'new' -%}
+                <span class="pawd-card-badge pawd-badge-new">New</span>
+              {%- elsif product.tags contains 'personalised' -%}
+                <span class="pawd-card-badge pawd-badge-pers">Personalise</span>
+              {%- elsif product.tags contains 'bestseller' -%}
+                <span class="pawd-card-badge pawd-badge-top">Best Seller</span>
+              {%- endif -%}
+
+              {%- if show_rank_badges -%}
+                <span class="pawd-rank-b">{{ forloop.index }}</span>
+              {%- endif -%}
+
+              <span class="pawd-card-wish" aria-label="Add to wishlist">&#9825;</span>
+              <div class="pawd-card-qa"><span>Quick Add</span></div>
+            </div>
+
+            <div class="pawd-card-info">
+              {%- if product.type != blank -%}
+                <div class="pawd-card-cat">{{ product.type }}</div>
+              {%- endif -%}
+              <div class="pawd-card-name">{{ product.title }}</div>
+              <div class="pawd-card-price">
+                {%- if product.compare_at_price > product.price -%}
+                  <span class="pawd-card-was">{{ product.compare_at_price | money }}</span>
+                  <span class="pawd-card-sale-p">{{ product.price | money }}</span>
+                {%- else -%}
+                  {{ product.price | money }}
+                {%- endif -%}
+              </div>
+              <div class="pawd-card-stars">
+                <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                <span class="rev-ct">({{ product.metafields.reviews.rating_count | default: 0 }})</span>
+              </div>
+              {%- if product.options.size > 0 -%}
+                {%- assign colour_opt = product.options_by_name['Colour'] | default: product.options_by_name['Color'] -%}
+                {%- if colour_opt != blank -%}
+                  <div class="pawd-card-swatches">
+                    {%- for value in colour_opt.values -%}
+                      <span class="pawd-card-swatch{% if forloop.first %} active{% endif %}" style="background:{{ value | handleize | replace: '-', '' }}" title="{{ value }}"></span>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} Pagination {%- endcomment -%}
+      {%- if paginate.pages > 1 -%}
+        <nav class="pawd-pag" aria-label="Pagination">
+          {%- if paginate.previous -%}
+            <a href="{{ paginate.previous.url }}" class="pawd-pag-btn" aria-label="Previous">&lsaquo;</a>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}" class="pawd-pag-btn">{{ part.title }}</a>
+            {%- else -%}
+              <span class="pawd-pag-btn current">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a href="{{ paginate.next.url }}" class="pawd-pag-btn" aria-label="Next">&rsaquo;</a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</div>
+
+{%- comment -%} Countdown Timer JS {%- endcomment -%}
+{%- if show_sale_timer and sale_end_date != blank -%}
+<script>
+(function(){
+  var el = document.querySelector('[data-pawd-countdown]');
+  if (!el) return;
+  var end = new Date(el.getAttribute('data-pawd-countdown')).getTime();
+  function tick(){
+    var now = Date.now(), d = end - now;
+    if (d < 0) d = 0;
+    var s = Math.floor(d/1000), m = Math.floor(s/60), h = Math.floor(m/60), dd = Math.floor(h/24);
+    el.querySelector('[data-days]').textContent = String(dd).padStart(2,'0');
+    el.querySelector('[data-hours]').textContent = String(h%24).padStart(2,'0');
+    el.querySelector('[data-mins]').textContent = String(m%60).padStart(2,'0');
+    el.querySelector('[data-secs]').textContent = String(s%60).padStart(2,'0');
+    if (d > 0) requestAnimationFrame(function(){ setTimeout(tick, 1000); });
+  }
+  tick();
+})();
+</script>
+{%- endif -%}
+
+{%- schema -%}
+{
+  "name": "PAWD Collection Grid",
+  "class": "pawd-coll-grid-section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "grid_columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Products per row",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "label": "Products per page",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "card_ratio",
+      "label": "Card image ratio",
+      "options": [
+        { "value": "portrait", "label": "Portrait (3:4)" },
+        { "value": "square", "label": "Square (1:1)" }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subnav",
+      "label": "Show sub-navigation",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "subnav_linklist",
+      "label": "Sub-navigation menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Show filter bar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sidebar",
+      "label": "Show sidebar filters",
+      "default": false,
+      "info": "Enable for sub-collections like Collars"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pers_strip",
+      "label": "Show personalise USP strip",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sale_timer",
+      "label": "Show sale countdown",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "sale_end_date",
+      "label": "Sale end date (ISO format)",
+      "info": "e.g. 2025-12-31T23:59:59",
+      "default": ""
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rank_badges",
+      "label": "Show rank badges",
+      "default": false,
+      "info": "For Best Sellers collection"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "usp_item",
+      "name": "USP item",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon (emoji or text)",
+          "default": "✦"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Your Text"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle"
+        }
+      ]
+    },
+    {
+      "type": "sale_message",
+      "name": "Sale message",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Summer Sale"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Up to 40% off"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PAWD Collection Grid"
+    }
+  ]
+}
+{%- endschema -%}

@@ -1,0 +1,75 @@
+{
+  "sections": {
+    "main": {
+      "type": "pawd-guide-post",
+      "settings": {
+        "resources_url": "/pages/resources",
+        "steps_count": "5",
+        "author_role": "Head of Product \u00b7 PAWD",
+        "author_bio": "",
+        "related_blog": "guides",
+        "related_eyebrow": "More Useful Guides",
+        "related_title": "Related <em>Guides &amp; Articles</em>"
+      },
+      "blocks": {
+        "toc": {
+          "type": "toc",
+          "settings": {
+            "items": "Before You Start|Where to Measure|The 5-Step Process|Size Chart|Collar vs Harness|Final Checklist|Breed-Specific Notes|Puppy Timeline"
+          }
+        },
+        "calc": {
+          "type": "sizing_calc",
+          "settings": {}
+        },
+        "p1": {
+          "type": "sidebar_product",
+          "settings": {
+            "title": "Italian Leather Collar",
+            "price_text": "From $89 AUD \u00b7 5 sizes"
+          }
+        },
+        "p2": {
+          "type": "sidebar_product",
+          "settings": {
+            "title": "Braided Rope Collar",
+            "price_text": "From $64 AUD \u00b7 5 sizes"
+          }
+        },
+        "p3": {
+          "type": "sidebar_product",
+          "settings": {
+            "title": "Cat Safety Collar",
+            "price_text": "From $54 AUD \u00b7 One size"
+          }
+        },
+        "rel": {
+          "type": "related_guides",
+          "settings": {
+            "blog_handle": "guides"
+          }
+        },
+        "help": {
+          "type": "help_callout",
+          "settings": {
+            "title": "Need <em>help?</em>",
+            "body": "Email our team with your dog\u2019s breed, weight and coat type and we\u2019ll recommend a size personally.",
+            "button": "Ask the Team"
+          }
+        }
+      },
+      "block_order": [
+        "toc",
+        "calc",
+        "p1",
+        "p2",
+        "p3",
+        "rel",
+        "help"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

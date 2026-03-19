@@ -1,0 +1,60 @@
+{
+  "sections": {
+    "main": {
+      "type": "pawd-article-post",
+      "settings": {
+        "resources_url": "/pages/resources",
+        "author_role": "Co-Founder & Creative Director \u00b7 PAWD",
+        "author_bio": "",
+        "related_eyebrow": "Keep Reading",
+        "related_title": "Related <em>Articles</em>"
+      },
+      "blocks": {
+        "toc": {
+          "type": "toc",
+          "settings": {
+            "items": "The Four Grades of Leather|Where Our Leather Comes From|What Full-Grain Feels Like|Why Most Brands Don't Use It"
+          }
+        },
+        "p1": {
+          "type": "sidebar_product",
+          "settings": {
+            "widget_title": "Shop the Leather Range",
+            "title": "Italian Leather Collar",
+            "price_text": "From $89 AUD"
+          }
+        },
+        "p2": {
+          "type": "sidebar_product",
+          "settings": {
+            "widget_title": "Shop the Leather Range",
+            "title": "The Leather Lead",
+            "price_text": "From $119 AUD"
+          }
+        },
+        "p3": {
+          "type": "sidebar_product",
+          "settings": {
+            "widget_title": "Shop the Leather Range",
+            "title": "The Leather Harness",
+            "price_text": "From $149 AUD"
+          }
+        },
+        "rel": {
+          "type": "related_articles",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "toc",
+        "p1",
+        "p2",
+        "p3",
+        "rel"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

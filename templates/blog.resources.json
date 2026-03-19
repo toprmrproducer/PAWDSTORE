@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "pawd_resources": {
+      "type": "pawd-resources-hub",
+      "settings": {
+        "heading": "Resources",
+        "subheading": "Expert guides, care advice and stories from the PAWD team.",
+        "show_search": true
+      }
+    }
+  },
+  "order": ["pawd_resources"]
+}
